@@ -21,6 +21,35 @@
       min-height: 100vh;
     }
 
+    /* Lock screen */
+    .lock-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, #b5203b, #d4364f);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px 24px;
+    }
+    .lock-screen .lock-logo { font-size: 2.8rem; margin-bottom: 8px; }
+    .lock-screen h1 { color: white; font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; }
+    .lock-screen p { color: rgba(255,255,255,0.8); font-size: 0.85rem; margin-bottom: 28px; }
+    .lock-screen input {
+      width: 100%; max-width: 320px; padding: 14px 16px;
+      border: none; border-radius: 12px; font-size: 1rem;
+      text-align: center; letter-spacing: 0.05em;
+      margin-bottom: 12px; outline: none;
+    }
+    .lock-screen button {
+      width: 100%; max-width: 320px; padding: 14px;
+      background: white; color: #b5203b;
+      border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+    }
+    .lock-screen .lock-error {
+      color: rgba(255,255,255,0.9); font-size: 0.85rem;
+      margin-top: 10px; display: none;
+    }
+    .hidden { display: none !important; }
+
     header {
       background: linear-gradient(135deg, #b5203b, #d4364f);
       color: white;
@@ -153,6 +182,15 @@
   </style>
 </head>
 <body>
+
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-logo">🌷</div>
+  <h1>Wicked Tulips</h1>
+  <p>Team SOPs — Season 2026</p>
+  <input type="password" id="pwInput" placeholder="Enter team password" onkeydown="if(event.key==='Enter')unlock()">
+  <button onclick="unlock()">Unlock</button>
+  <div class="lock-error" id="lockError">Incorrect password — try again</div>
+</div>
 
 <header>
   <h1>🌷 Wicked Tulips</h1>
@@ -644,6 +682,20 @@ const CONFIG = {
 // ================================================================
 //  END CONFIGURATION — do not edit below this line
 // ================================================================
+
+// Password gate
+function unlock() {
+  if (document.getElementById('pwInput').value === 'teamtulip2026') {
+    sessionStorage.setItem('wt_unlocked', '1');
+    document.getElementById('lockScreen').classList.add('hidden');
+  } else {
+    document.getElementById('lockError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+if (sessionStorage.getItem('wt_unlocked') === '1') {
+  document.getElementById('lockScreen').classList.add('hidden');
+}
 
 let currentTeam = null;
 
